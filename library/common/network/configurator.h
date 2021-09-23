@@ -20,7 +20,7 @@ using DnsCacheSharedPtr = Extensions::Common::DynamicForwardProxy::DnsCacheShare
  */
 class Configurator : public Singleton::Instance {
 public:
-  Configurator(absl::optional<DnsCacheSharedPtr> dns_cache) : dns_cache_(dns_cache) {}
+  Configurator(Server::Configuration::FactoryContextBase& context) : context_(context) {}
 
   /**
    * @returns a list of local network interfaces supporting IPv4.
@@ -55,6 +55,7 @@ public:
   Socket::OptionsSharedPtr getUpstreamSocketOptions(envoy_network_t network);
 
 private:
+  Server::Configuration::FactoryContextBase& context_;
   std::vector<std::string> enumerateInterfaces(unsigned short family);
   absl::optional<DnsCacheSharedPtr> dns_cache_;
   static std::atomic<envoy_network_t> preferred_network_;
